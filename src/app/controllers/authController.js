@@ -1,10 +1,11 @@
+
+require('dotenv/config');
+
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const mailer = require('../../modules/mailer');
-
-const authConfig = require('../../config/auth');
 
 const User = require('../model/User');
 const UserConfig = require('../model/UserConfig');
@@ -12,8 +13,8 @@ const UserConfig = require('../model/UserConfig');
 const router = express.Router();
 
 function generateToken(params = {}) {
-    return jwt.sign(params, authConfig.secret, {
-        expiresIn: 86400
+    return jwt.sign(params, process.env.AUTH, {
+        expiresIn: 43200
     });
 };
 
@@ -153,7 +154,7 @@ router.post('/authenticate_token', async (req, res) => {
         token
     } = req.body;
 
-    jwt.verify(token, authConfig.secret, (err, decoded) => {
+    jwt.verify(token, process.env.AUTH, (err, decoded) => {
         if (err) return res.status(401).send(JSON.stringify('NO'));
 
         return res.status(200).send(JSON.stringify('OK'));
