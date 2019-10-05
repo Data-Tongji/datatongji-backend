@@ -12,15 +12,15 @@ router.use(authMiddleware);
 function CheckDataType(data, subTypeMeasure) {
     if (subTypeMeasure !== 'Ordinal') {
         var vetor = data
-        let answer = 'quantitativo'
+        let answer = 'Quantitativo'
         for (let i = 0; i < vetor.length; i++) {
             if (isNaN(vetor[i])) {
-                answer = 'qualitativo'
+                answer = 'Qualitativo'
             };
         }
         return answer
     }
-    else { return 'qualitativo' }
+    else { return 'Qualitativo' }
 };
 
 function compareNumbers(a, b) {
@@ -147,10 +147,10 @@ function calculateWeightedMean(frequencyValue, type, subType) {
     let soma = 0;
     let n = frequencyValue.reduce((total, frequencyValue) => total + frequencyValue.frequency, 0);
 
-    if (type === 'qualitativo') {
+    if (type === 'Qualitativo') {
         return "Não existe"
     } else {
-        if (subType !== 'continua') {
+        if (subType !== 'Contínua') {
             for (let i = 0; i < frequencyValue.length; i++) {
                 soma = soma + (parseFloat(frequencyValue[i].frequency) * parseFloat(frequencyValue[i].value));
             }
@@ -169,10 +169,10 @@ function calculateVariance(frequencyValue, mean, type, amost, subType) {
     let soma = 0;
     let n = frequencyValue.reduce((total, frequencyValue) => total + frequencyValue.frequency, 0);
 
-    if (type === 'qualitativo') {
+    if (type === 'Qualitativo') {
         return "Não existe"
     }
-    if (subType !== 'continua') {
+    if (subType !== 'Contínua') {
         for (let i = 0; i < frequencyValue.length; i++) {
             soma = soma + ((Math.pow((parseFloat(frequencyValue[i].value) - mean), 2)) * parseFloat(frequencyValue[i].frequency));
         }
@@ -181,7 +181,7 @@ function calculateVariance(frequencyValue, mean, type, amost, subType) {
         } else {
             return parseFloat((soma / (n - 1)).toFixed(4));
         }
-    } else if (subType === 'continua') {
+    } else if (subType === 'Contínua') {
         for (let i = 0; i < frequencyValue.length; i++) {
             soma = soma + ((Math.pow((parseFloat(frequencyValue[i].mediumPoint) - mean), 2)) * parseFloat(frequencyValue[i].frequency));
         }
@@ -194,14 +194,14 @@ function calculateVariance(frequencyValue, mean, type, amost, subType) {
 }
 
 function calculateDP(variance, type) {
-    if (type === 'qualitativo') {
+    if (type === 'Qualitativo') {
         return 'Não existe'
     }
     return parseFloat((Math.sqrt(variance)).toFixed(4));
 }
 
 function calculateCV(dp, mp, type) {
-    if (type === 'qualitativo') {
+    if (type === 'Qualitativo') {
         return 'Não existe'
     }
     return ((dp / mp) * 100).toFixed(3) + '%';
@@ -233,7 +233,7 @@ function calculateAccumulatedFrequency(dataFrequency) {
 
 function calculateMedian(arr, interval, dataFrequency, subType, fac) {
     let n = arr.length;
-    if (subType !== 'continua') {
+    if (subType !== 'Contínua') {
 
         if (n % 2 === 0) {
             let a = arr[(n / 2) - 1];
@@ -254,7 +254,7 @@ function calculateMedian(arr, interval, dataFrequency, subType, fac) {
             return (parseInt(n / 2) + 1) + 'º Posição: ' + arr[(parseInt(n / 2) + 1)];
         }
     }
-    else if (subType === 'continua') {
+    else if (subType === 'Contínua') {
         let medpos = arr.length / 2;
         let Li = 0;
         let Fai = 0;
@@ -276,7 +276,7 @@ function calculateMedian(arr, interval, dataFrequency, subType, fac) {
 }
 function calculateMediumPoint(subType, initialElements, finalElements) {
     let mediumPoint = [];
-    if (subType === 'continua') {
+    if (subType === 'Contínua') {
         for (let i = 0; i < initialElements.length; i++) {
 
             mediumPoint.push((initialElements[i] + finalElements[i]) / 2);
@@ -319,7 +319,7 @@ function calculateMode(frequencyValue, type, countElements, dataOrder) {
     }
 
 
-    if (type !== 'continua') {
+    if (type !== 'Contínua') {
         mode.push({
             "mode": frequencyValue[0].frequency,
             "Value": frequencyValue[0].value
@@ -381,7 +381,7 @@ function mountsDescriptive(dataLength, dataFrequency, subType) {
         freqAcum = freqAcum + parseFloat(dataFrequency[i].frequency)
         accumulatedPercentage.push(Accumulated(freqAcum, dataLength));
         relativeFrequency.push(simplePercentage(dataFrequency[i].frequency, dataLength));
-        if (subType === 'continua') {
+        if (subType === 'Contínua') {
             descriptive.push({
                 "value": dataFrequency[i].value + ' → ' + dataFrequency[i].value2,
                 "frequency": dataFrequency[i].frequency,
@@ -390,7 +390,7 @@ function mountsDescriptive(dataLength, dataFrequency, subType) {
                 "accumulatedPercentage": accumulatedPercentage[i]
             })
         }
-        if (subType !== 'continua') {
+        if (subType !== 'Contínua') {
             descriptive.push({
                 "value": dataFrequency[i].value,
                 "frequency": dataFrequency[i].frequency,
@@ -405,13 +405,13 @@ function mountsDescriptive(dataLength, dataFrequency, subType) {
 };
 
 function subTypeVar(dataLength, typeVar) {
-    if (typeVar === 'qualitativo')
-        return 'nominal';
+    if (typeVar === 'Qualitativo')
+        return 'Nominal';
 
     if (dataLength >= 9)
-        return 'continua';
+        return 'Contínua';
 
-    return 'discreta';
+    return 'Discreta';
 };
 
 function stepAmplitude(dataOrder) {
@@ -425,7 +425,7 @@ function calculatePercentile(dataOrder, subType, dataFrequency, accumulatedFrequ
     console.log(accumulatedFrequency);
     let P = 0;
     let percs = [];
-    if (subType === 'continua') {
+    if (subType === 'Contínua') {
         for (var i = 1; i <= 100; i++) {
             P = (i * (dataOrder.length)) / 100;
             let Li = [];
@@ -454,7 +454,7 @@ function calculatePercentile(dataOrder, subType, dataFrequency, accumulatedFrequ
             );
         }
     }
-    else if (subType !== 'continua') {
+    else if (subType !== 'Contínua') {
         for (var i = 1; i <= 100; i++) {
             P = (i * (dataOrder.length - 1)) / 100;
 
@@ -537,6 +537,9 @@ router.post('/simple_frequency', async (req, res) => {
         amost
     } = req.body;
 
+    console.log(subTypeMeasure);
+    console.log(amost);
+
     const token = req.headers.authorization;
     var subType = null;
     var amplitude = null;
@@ -568,7 +571,7 @@ router.post('/simple_frequency', async (req, res) => {
         } else {
             subType = subTypeMeasure;
         };
-        if (subType === 'continua') {
+        if (subType === 'Contínua') {
             amplitude = stepAmplitude(dataOrder);
             lines = parseFloat(Math.sqrt(dataOrder.length).toFixed(2));
             classInterval = calculateInterv(amplitude, parseInt(lines), dataOrder);
