@@ -189,8 +189,8 @@ router.post('/forgot_password', async (req, res) => {
         });
 
         mailer.sendMail({
-            to: 'leoronne@gmail.com',
-            from: 'lucas.dcorrea1@gamil.com',
+            to: email,
+            from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
             template: 'auth/forgot_password',
             context: {
                 token
