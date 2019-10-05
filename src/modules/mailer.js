@@ -8,12 +8,11 @@ const port = process.env.MAIL_PORT;
 const usr = process.env.MAIL_USER;
 const pass = process.env.MAIL_PASS;
 
-
-
 const transport = nodemailer.createTransport({
   host,
   port,
-    auth: { usr, pass },
+    auth: { user: usr, 
+    pass: pass },
 });
 
 const handlebarOptions = {
