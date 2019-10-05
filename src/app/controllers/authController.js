@@ -87,7 +87,8 @@ router.post('/user_config', async (req, res) => {
 
 router.post('/register', async (req, res) => {
     const {
-        email
+        email,
+        name
     } = req.body;
 
     try {
@@ -97,8 +98,8 @@ router.post('/register', async (req, res) => {
             });
 
         if (await User.findOne({
-                email
-            }))
+            email
+        }))
             return res.status(400).send({
                 error: 'Usuário já cadastrado'
             });
@@ -107,12 +108,29 @@ router.post('/register', async (req, res) => {
 
         user.password = undefined;
 
+
+        mailer.sendMail({
+            to: email,
+            from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
+            subject: 'Bem vindo ao Data Tongjì!',
+            template: 'auth/new_user',
+            context: {
+                name
+            }
+        }, (er) => {
+            if (er)
+                return res.status(400).send({
+                    error: er + 'Cannot email'
+                })
+        });
+
         return res.send({
             user,
             token: generateToken({
                 id: user.id
             })
         });
+
     } catch (err) {
         return res.status(400).send({
             error: 'Falha de registro'
@@ -177,7 +195,7 @@ router.post('/forgot_password', async (req, res) => {
             });
 
         const token = crypto.randomBytes(20).toString('hex');
-
+        const name = user.name;
         const now = new Date();
         now.setHours(now.getHours() + 1);
 
@@ -191,9 +209,11 @@ router.post('/forgot_password', async (req, res) => {
         mailer.sendMail({
             to: email,
             from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
+            subject: 'Resetar senha',
             template: 'auth/forgot_password',
             context: {
-                token
+                token,
+                name
             },
         }, (err) => {
             if (err)
@@ -221,8 +241,8 @@ router.post('/reset_password', async (req, res) => {
 
     try {
         const user = await User.findOne({
-                email
-            })
+            email
+        })
             .select('+passwordResetToken passwordResetExpires');
 
         if (!user)
@@ -263,8 +283,8 @@ router.post('/valid_token', async (req, res) => {
 
     try {
         const user = await User.findOne({
-                email
-            })
+            email
+        })
             .select('+passwordResetToken passwordResetExpires');
 
         if (!user)
