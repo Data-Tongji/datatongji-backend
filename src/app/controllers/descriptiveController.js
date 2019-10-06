@@ -422,7 +422,7 @@ function stepAmplitude(dataOrder) {
 };
 
 function calculatePercentile(dataOrder, subType, dataFrequency, accumulatedFrequency, classInterval) {
-    console.log(accumulatedFrequency);
+    // console.log(accumulatedFrequency);
     let P = 0;
     let percs = [];
     if (subType === 'Contínua') {
@@ -434,8 +434,6 @@ function calculatePercentile(dataOrder, subType, dataFrequency, accumulatedFrequ
 
             for (var j = 0; j < accumulatedFrequency.length; j++) {
                 if (accumulatedFrequency[j] > P) {
-                    // console.log(accumulatedFrequency[j] );
-                    // console.log(P);
                     Li.push(dataFrequency[j].value);
                     Fm.push(dataFrequency[j].frequency);
                     if (j === 0) {
@@ -537,9 +535,6 @@ router.post('/simple_frequency', async (req, res) => {
         amost
     } = req.body;
 
-    console.log(subTypeMeasure);
-    console.log(amost);
-
     const token = req.headers.authorization;
     var subType = null;
     var amplitude = null;
@@ -549,7 +544,6 @@ router.post('/simple_frequency', async (req, res) => {
     var finalElements = null;
     var countClass = null;
     var mediumPoint = null;
-
 
     try {
         if (!varPesq || data.length === 0)
