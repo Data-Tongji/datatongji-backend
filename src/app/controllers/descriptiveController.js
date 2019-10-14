@@ -35,7 +35,6 @@ function TransformArrayOrd(dataOrder) {
         }
     }
     return arr;
-    // console.log(arr);
 }
 
 function simpleFrequency(NewData, data, subTypeMeasure) {
@@ -144,7 +143,7 @@ function orderby(data, answer, subTypeMeasure) {
 };
 
 function calculateWeightedMean(frequencyValue, type, subType) {
-    let soma = 0;
+    let sum = 0;
     let n = frequencyValue.reduce((total, frequencyValue) => total + frequencyValue.frequency, 0);
 
     if (type === 'Qualitativo') {
@@ -152,21 +151,21 @@ function calculateWeightedMean(frequencyValue, type, subType) {
     } else {
         if (subType !== 'Contínua') {
             for (let i = 0; i < frequencyValue.length; i++) {
-                soma = soma + (parseFloat(frequencyValue[i].frequency) * parseFloat(frequencyValue[i].value));
+                sum = sum + (parseFloat(frequencyValue[i].frequency) * parseFloat(frequencyValue[i].value));
             }
-            return (soma / n);
+            return (sum / n);
         }
         else {
             for (let i = 0; i < frequencyValue.length; i++) {
-                soma = soma + (parseFloat(frequencyValue[i].frequency) * parseFloat(frequencyValue[i].mediumPoint));
+                sum = sum + (parseFloat(frequencyValue[i].frequency) * parseFloat(frequencyValue[i].mediumPoint));
             }
-            return (soma / n);
+            return (sum / n);
         }
     }
 }
 
 function calculateVariance(frequencyValue, mean, type, amost, subType) {
-    let soma = 0;
+    let sum = 0;
     let n = frequencyValue.reduce((total, frequencyValue) => total + frequencyValue.frequency, 0);
 
     if (type === 'Qualitativo') {
@@ -174,21 +173,21 @@ function calculateVariance(frequencyValue, mean, type, amost, subType) {
     }
     if (subType !== 'Contínua') {
         for (let i = 0; i < frequencyValue.length; i++) {
-            soma = soma + ((Math.pow((parseFloat(frequencyValue[i].value) - mean), 2)) * parseFloat(frequencyValue[i].frequency));
+            sum = sum + ((Math.pow((parseFloat(frequencyValue[i].value) - mean), 2)) * parseFloat(frequencyValue[i].frequency));
         }
         if (amost === 'População') {
-            return parseFloat((soma / n).toFixed(4));
+            return parseFloat((sum / n).toFixed(4));
         } else {
-            return parseFloat((soma / (n - 1)).toFixed(4));
+            return parseFloat((sum / (n - 1)).toFixed(4));
         }
     } else if (subType === 'Contínua') {
         for (let i = 0; i < frequencyValue.length; i++) {
-            soma = soma + ((Math.pow((parseFloat(frequencyValue[i].mediumPoint) - mean), 2)) * parseFloat(frequencyValue[i].frequency));
+            sum = sum + ((Math.pow((parseFloat(frequencyValue[i].mediumPoint) - mean), 2)) * parseFloat(frequencyValue[i].frequency));
         }
         if (amost === 'População') {
-            return parseFloat((soma / n).toFixed(4));
+            return parseFloat((sum / n).toFixed(4));
         } else {
-            return parseFloat((soma / (n - 1)).toFixed(4));
+            return parseFloat((sum / (n - 1)).toFixed(4));
         }
     }
 }
@@ -208,15 +207,15 @@ function calculateCV(dp, mp, type) {
 }
 
 function calculatemean(data) {
-    let soma = 0;
+    let sum = 0;
 
     for (let i = 0; i < data.length; i++) {
         if (isNaN(data[i])) {
             return "Não existe"
         }
-        soma = soma + parseFloat(data[i]);
+        sum = sum + parseFloat(data[i]);
     }
-    return (soma / data.length)
+    return (sum / data.length)
 }
 
 function calculateAccumulatedFrequency(dataFrequency) {
@@ -317,7 +316,6 @@ function calculateMode(frequencyValue, type, countElements, dataOrder) {
             "Value": 'Série Amodal'
         }]
     }
-
 
     if (type !== 'Contínua') {
         mode.push({
@@ -422,7 +420,6 @@ function stepAmplitude(dataOrder) {
 };
 
 function calculatePercentile(dataOrder, subType, dataFrequency, accumulatedFrequency, classInterval) {
-    // console.log(accumulatedFrequency);
     let P = 0;
     let percs = [];
     if (subType === 'Contínua') {
