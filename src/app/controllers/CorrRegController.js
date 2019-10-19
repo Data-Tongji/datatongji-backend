@@ -37,21 +37,7 @@ function pearsonCorrelation(prefs, p1, p2) {
 
       if (den == 0) return 0;
 
-      return num / den;
-      // var EY = Y.reduce((a, b) => a + b, 0);
-      // var EX = X.reduce((a, b) => a + b, 0);
-      // var YX = 0;
-      // var Xsqrt = 0;
-      // var Ysqrt = 0;
-      // for (var i = 0; i <= X.length - 1; i++) {
-      //       YX = YX + (X[i] * Y[i]);
-      //       Xsqrt = Xsqrt + Math.pow(X[i], 2);
-      //       Ysqrt = Ysqrt + Math.pow(Y[i], 2);
-      // }
-      // let r = ((X.length * YX) - (EY * EX)) /
-      //       ((sqrt((X.length * Xsqrt) - Math.pow(EX, 2))) *
-      //             (sqrt((Y.length * Ysqrt) - Math.pow(EY, 2))));
-      // return r;
+      return parseFloat((num / den).toFixed(4));
 };
 
 function Regression(X, Y) {
@@ -69,8 +55,8 @@ function Regression(X, Y) {
       let a = (EY - (r * EX)) / X.length;
 
       return {
-            "aCoef": r,
-            "iPoint": a
+            "aCoef": parseFloat(r.toFixed(4)),
+            "iPoint": parseFloat(a.toFixed(4))
       };
 };
 
