@@ -37,7 +37,7 @@ router.get('/get_user', async (req, res) => {
         return res.json(user)
     } catch (error) {
         return res.status(400).send({
-            error: error + '  Falha de registro'
+            error: error + ' register failure'
         });
     }
 
@@ -78,7 +78,7 @@ router.post('/user_config', async (req, res) => {
 
     } catch (err) {
         return res.status(400).send({
-            error: 'Falha ao atualizar as configurações do usuário'
+            error: 'Faile to refresh user configuration'
         });
     }
 });
@@ -92,14 +92,14 @@ router.post('/register', async (req, res) => {
     try {
         if (!validateEmailAddress(email))
             return res.status(400).send({
-                error: 'E-mail inválido'
+                error: 'Invalid e-mail'
             });
 
         if (await User.findOne({
             email
         }))
             return res.status(400).send({
-                error: 'Usuário já cadastrado'
+                error: 'User has already been registered'
             });
 
         const user = await User.create(req.body);
@@ -110,7 +110,7 @@ router.post('/register', async (req, res) => {
         mailer.sendMail({
             to: email,
             from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
-            subject: 'Bem vindo ao Data Tongjì!',
+            subject: 'Welcome to Data Tongjì!',
             template: 'auth/new_user',
             context: {
                 name
@@ -118,7 +118,7 @@ router.post('/register', async (req, res) => {
         }, (er) => {
             if (er)
                 return res.status(400).send({
-                    error: er + 'Cannot email'
+                    error: er + 'Cannot send welcome email'
                 })
         });
 
@@ -131,7 +131,7 @@ router.post('/register', async (req, res) => {
 
     } catch (err) {
         return res.status(400).send({
-            error: 'Falha de registro'
+            error: 'Failure'
         });
     }
 });
@@ -148,12 +148,12 @@ router.post('/authenticate', async (req, res) => {
 
     if (!user)
         return res.status(400).send({
-            error: 'Usuário inválido'
+            error: 'User not found'
         });
 
     if (!await bcrypt.compare(password, user.password))
-        return res.status(400).send({
-            error: 'Senha inválida'
+        return res.status(401).send({
+            error: 'Invalid credentials'
         });
 
     user.password = undefined;
@@ -162,7 +162,6 @@ router.post('/authenticate', async (req, res) => {
         generateToken({
             id: user.id,
         })));
-
 });
 
 router.post('/authenticate_token', async (req, res) => {
@@ -189,7 +188,7 @@ router.post('/forgot_password', async (req, res) => {
 
         if (!user)
             return res.status(400).send({
-                error: 'Usuário inválido'
+                error: 'User not found'
             });
 
         const token = crypto.randomBytes(20).toString('hex');
@@ -207,7 +206,7 @@ router.post('/forgot_password', async (req, res) => {
         mailer.sendMail({
             to: email,
             from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
-            subject: 'Resetar senha',
+            subject: 'Reset password',
             template: 'auth/forgot_password',
             context: {
                 token,
@@ -225,7 +224,7 @@ router.post('/forgot_password', async (req, res) => {
 
     } catch (err) {
         res.status(400).send({
-            error: err + 'Erro ao tentar recuperar password'
+            error: err + 'Failed to change password'
         });
     }
 });
@@ -245,19 +244,19 @@ router.post('/reset_password', async (req, res) => {
 
         if (!user)
             return res.status(400).send({
-                error: 'Usuário inválido !'
+                error: 'User not found!'
             });
 
         if (token !== user.passwordResetToken)
             return res.status(400).send({
-                error: 'Token inválido !'
+                error: 'Invalid token!'
             });
 
         const now = new Date();
 
         if (!now > user.passwordResetExpires)
             return res.status(400).send({
-                error: 'Token expirado !'
+                error: 'Expired token!'
             })
 
         user.password = password;
@@ -267,7 +266,7 @@ router.post('/reset_password', async (req, res) => {
         return res.status(200).send(JSON.stringify('OK'));
     } catch (err) {
         res.status(400).send({
-            error: 'Erro ao resetar password'
+            error: 'Failed to change password'
         })
     }
 
@@ -287,25 +286,25 @@ router.post('/valid_token', async (req, res) => {
 
         if (!user)
             return res.status(400).send({
-                error: 'Usuário inválido !'
+                error: 'User not found'
             });
 
         if (token !== user.passwordResetToken)
             return res.status(400).send({
-                error: 'Token inválido !'
+                error: 'Invalid token!'
             });
 
         const now = new Date();
 
         if (!now > user.passwordResetExpires)
             return res.status(400).send({
-                error: 'Token expirado !'
+                error: 'Expired token!'
             })
 
         return res.status(200).send(JSON.stringify('OK'));
     } catch (err) {
         res.status(400).send({
-            error: 'Erro ao resetar password'
+            error: 'Failure'
         })
     }
 })

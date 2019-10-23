@@ -4,6 +4,7 @@ const authMiddleware = require('../middlewares/auth');
 const router = express.Router();
 const { factorial, sqrt, format } = require('mathjs')
 const User = require('../model/User');
+const CorrReg = require('../model/corrReg');
 router.use(authMiddleware);
 
 function pearsonCorrelation(prefs, p1, p2) {
@@ -94,7 +95,6 @@ router.post('/corrreg', async (req, res) => {
 
 router.post('/save', async (req, res) => {
       const {
-            type,
             name,
             data,
             results
@@ -111,9 +111,12 @@ router.post('/save', async (req, res) => {
                   return res.status(400).send({
                         error: 'Could not find user!'
                   });
-            // const anl = await Probability.create({
-            //       userIdF
-            // });
+            const anl = await CorrReg.create({
+                  userId,
+                  name,
+                  data,
+                  results
+            });
             // mailer.sendMail({
             //       to: email,
             //       from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
@@ -138,4 +141,4 @@ router.post('/save', async (req, res) => {
       }
 });
 
-module.exports = app => app.use('/correlation', router);
+module.exports = app => app.use('/correlation', router);    
