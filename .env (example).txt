@@ -4,7 +4,7 @@ APP_URL=https://application_url.com
 
 AUTH=jwt_secret
 
-MONGO_URL=dataBase-link-MongoDB
+MONGO_URL=mongodb+srv://DaTaTonGjI:DwcYR7bCUoSoASxn@datatongji-fvxg0.mongodb.net/test?retryWrites=true&w=majority
 
 MAIL_HOST=mail_host_exple
 

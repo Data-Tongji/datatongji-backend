@@ -16,10 +16,20 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-app.use(cors());
-// app.use(require('../src/routes'));
 
-require('./app/controllers/index')(app);
+app.use(cors());
+
+// Carrega as rotas
+const authRoutes = require('./routes/authRoutes');
+const corrRegRoutes = require('./routes/corrRegRoutes');
+const descriptiveRoutes = require('./routes/descriptiveRoutes');
+const probabilityRoutes = require('./routes/probabilityRoutes');
+
+
+app.use('/auth', authRoutes);
+app.use('/corrRegRoutes', corrRegRoutes);
+app.use('/descriptive', descriptiveRoutes);
+app.use('/probability', probabilityRoutes);
 
 
 const PORT = process.env.PORT || 8080;
