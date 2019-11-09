@@ -15,11 +15,11 @@ exports.CheckDataType = async(data, subTypeMeasure) => {
     else { return 'Qualitativo' }
 };
 
-exports.compareNumbers = async(a, b) =>{
+function compareNumbers(a, b){
     return a - b;
 };
 
-exports.TransformArrayOrd = async(dataOrder) => {
+function TransformArrayOrd(dataOrder){
     let arr = [];
     for (let i = 0; i < dataOrder.length; i++) {
         for (let j = 0; j < dataOrder[i].frequency; j++) {
@@ -86,14 +86,14 @@ exports.countByClass = async(arr, initialElements, finalElements) => {
     return res;
 };
 
-exports.Accumulated = async(freqAcum, freqAcumLength) => {
+function Accumulated(freqAcum, freqAcumLength){
     let porAcum = 0;
     porAcum = (100 * (freqAcum)) / (freqAcumLength);
     porAcum = porAcum.toFixed(2);
     return porAcum;
 };
 
-exports.simplePercentage = async(quant, dataLenght) => {
+function simplePercentage(quant, dataLenght){
     let simplePercentage = 0;
     simplePercentage = (100 * (quant)) / (dataLenght);
     simplePercentage = simplePercentage.toFixed(2);

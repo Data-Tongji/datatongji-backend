@@ -1,8 +1,9 @@
 'use/stric'
 const jwt = require('jsonwebtoken');
+const { factorial, sqrt, format } = require('mathjs')
 require('dotenv/config');
 
-exports.CalcZ = async(x, mean, dp) =>{
+function CalcZ(x, mean, dp){
     let res = '';
     res = ((x - mean) / dp);
     if (res >= 4) { res = 3.9; }
@@ -10,7 +11,7 @@ exports.CalcZ = async(x, mean, dp) =>{
     return res;
 };
 
-exports.Area = async(x) => {
+function Area(x){
     let l = x + '';
     l = parseInt(l.substr(0, 2));
     let c = x + '';
@@ -62,7 +63,7 @@ exports.Area = async(x) => {
     return NormalDistTable[l][c];
 };
 
-exports.Mean = async(values) => {
+function Mean(values){
     return (parseFloat((values.reduce(function (b, a) {
           return parseFloat(b) + parseFloat(a);
     })) / values.length));

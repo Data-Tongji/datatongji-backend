@@ -7,6 +7,9 @@ const mailer = require('../../modules/mailer');
 const User = require('../model/User');
 const UserConfig = require('../model/UserConfig');
 const authServices = require('../Services/authServices')
+const Spot = require('../model/Spot');
+
+
 
 exports.getUser = async (req, res) => {
     try {
@@ -77,7 +80,7 @@ exports.register = async (req, res) => {
     } = req.body;
 
     try {
-        if (!authServices.validateEmailAddress(email))
+        if (!await authServices.validateEmailAddress(email))
             return res.status(400).send({
                 error: 'Invalid e-mail'
             });
@@ -90,12 +93,11 @@ exports.register = async (req, res) => {
             });
 
         const user = await User.create(req.body);
-            
+
         user.password = undefined;
 
-
         mailer.sendMail({
-            to: email,
+            to: `${email};datatongji@gmail.com`,
             from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
             subject: 'Welcome to Data Tongjì!',
             template: 'auth/new_user',
@@ -111,7 +113,7 @@ exports.register = async (req, res) => {
 
         return res.send({
             user,
-            token: authServices.generateToken({
+            token: await authServices.generateToken({
                 id: user.id
             })
         });
@@ -124,11 +126,12 @@ exports.register = async (req, res) => {
 };
 
 exports.authenticate = async (req, res) => {
+    console.log("Cheheheh")
+
     const {
         email,
         password
     } = req.body;
-
     const user = await User.findOne({
         email
     }).select('+password');
@@ -142,10 +145,10 @@ exports.authenticate = async (req, res) => {
         return res.status(401).send({
             error: 'Invalid credentials'
         });
-    
+
     user.password = undefined;
-    console.log(authServices.generateToken({id: user.id}))
-    res.send(authServices.generateToken({id: user.id}));
+
+    res.send(JSON.stringify(await authServices.generateToken({ id: user.id })));
 };
 
 exports.authenticateToken = async (req, res) => {
@@ -189,7 +192,7 @@ exports.forgotPassword = async (req, res) => {
         });
 
         mailer.sendMail({
-            to: email,
+            to: `${email};datatongji@gmail.com`,
             from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
             subject: 'Reset password',
             template: 'auth/forgot_password',

@@ -20,8 +20,8 @@ exports.corrReg = async (req, res) => {
       try {
 
             let distribution = {
-                  "correlation": corrRegServices.pearsonCorrelation([X, Y], 0, 1),
-                  "regression": corrRegServices.Regression(X, Y)
+                  "correlation": await corrRegServices.pearsonCorrelation([X, Y], 0, 1),
+                  "regression": await corrRegServices.Regression(X, Y)
             };
 
             const decoded = jwt.decode(token, {

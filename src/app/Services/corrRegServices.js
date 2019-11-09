@@ -31,7 +31,6 @@ exports.pearsonCorrelation = async (prefs, p1, p2) => {
           (sum2Sq - Math.pow(sum2, 2) / n));
 
     if (den == 0) return 0;
-
     return parseFloat((num / den).toFixed(4));
 };
 

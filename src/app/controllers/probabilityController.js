@@ -18,7 +18,7 @@ exports.binomial = async (req, res) => {
 
       try {
 
-            let distribution = probabilityServeice.Binomial(k,
+            let distribution = await probabilityServeice.Binomial(k,
                   n,
                   p,
                   q,
@@ -63,7 +63,7 @@ exports.uniform = async (req, res) => {
 
       try {
 
-            let distribution = probabilityServeice.Uniform([PMin, PMax],
+            let distribution = await probabilityServeice.Uniform([PMin, PMax],
                   Min,
                   Max,
                   Opt);
@@ -99,7 +99,7 @@ exports.normal = async (req, res) => {
 
       try {
 
-            let distribution = probabilityServeice.Normal(Mean,
+            let distribution = await probabilityServeice.Normal(Mean,
                   stdDev,
                   Min,
                   Max,
