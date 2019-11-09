@@ -1,67 +1,15 @@
+'use strict';
+
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const authMiddleware = require('../middlewares/auth');
+const corrRegServices = require('../Services/corrRegServices')
 const router = express.Router();
 const { factorial, sqrt, format } = require('mathjs')
 const User = require('../model/User');
 const CorrReg = require('../model/corrReg');
-router.use(authMiddleware);
 
-function pearsonCorrelation(prefs, p1, p2) {
-      var si = [];
-      for (var key in prefs[p1]) {
-            if (prefs[p2][key]) si.push(key);
-      }
-      var n = si.length;
-      if (n == 0) return 0;
-      var sum1 = 0;
-      for (var i = 0; i < si.length; i++) sum1 += prefs[p1][si[i]];
-      var sum2 = 0;
-      for (var i = 0; i < si.length; i++) sum2 += prefs[p2][si[i]];
-      var sum1Sq = 0;
-      for (var i = 0; i < si.length; i++) {
-            sum1Sq += Math.pow(prefs[p1][si[i]], 2);
-      }
-      var sum2Sq = 0;
-      for (var i = 0; i < si.length; i++) {
-            sum2Sq += Math.pow(prefs[p2][si[i]], 2);
-      }
-
-      var pSum = 0;
-      for (var i = 0; i < si.length; i++) {
-            pSum += prefs[p1][si[i]] * prefs[p2][si[i]];
-      }
-
-      var num = pSum - (sum1 * sum2 / n);
-      var den = Math.sqrt((sum1Sq - Math.pow(sum1, 2) / n) *
-            (sum2Sq - Math.pow(sum2, 2) / n));
-
-      if (den == 0) return 0;
-
-      return parseFloat((num / den).toFixed(4));
-};
-
-function Regression(X, Y) {
-      var EY = Y.reduce((a, b) => a + b, 0);
-      var EX = X.reduce((a, b) => a + b, 0);
-      var YX = 0;
-      var Xsqrt = 0;
-      for (var i = 0; i <= X.length - 1; i++) {
-            YX = YX + (X[i] * Y[i]);
-            Xsqrt = Xsqrt + Math.pow(X[i], 2);
-      }
-      let r = ((X.length * YX) - (EY * EX)) /
-            ((X.length * Xsqrt) - (Math.pow(EX, 2)));
-
-      let a = (EY - (r * EX)) / X.length;
-
-      return {
-            "aCoef": parseFloat(r.toFixed(4)),
-            "iPoint": parseFloat(a.toFixed(4))
-      };
-};
-
-router.post('/corrreg', async (req, res) => {
+exports.corrReg = async (req, res) => {
       const {
             X,
             Y
@@ -72,8 +20,8 @@ router.post('/corrreg', async (req, res) => {
       try {
 
             let distribution = {
-                  "correlation": pearsonCorrelation([X, Y], 0, 1),
-                  "regression": Regression(X, Y)
+                  "correlation": await corrRegServices.pearsonCorrelation([X, Y], 0, 1),
+                  "regression": await corrRegServices.Regression(X, Y)
             };
 
             const decoded = jwt.decode(token, {
@@ -91,9 +39,9 @@ router.post('/corrreg', async (req, res) => {
                   error: err + ''
             });
       }
-});
+};
 
-router.post('/save', async (req, res) => {
+exports.save =async (req, res) => {
       const {
             name,
             data,
@@ -139,6 +87,4 @@ router.post('/save', async (req, res) => {
                   error: 'Failed to save analysis'
             });
       }
-});
-
-module.exports = app => app.use('/correlation', router);    
+};

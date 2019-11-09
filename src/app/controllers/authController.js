@@ -1,5 +1,4 @@
 require('dotenv/config');
-const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -7,21 +6,12 @@ const mailer = require('../../modules/mailer');
 
 const User = require('../model/User');
 const UserConfig = require('../model/UserConfig');
+const authServices = require('../Services/authServices')
+const Spot = require('../model/Spot');
 
-const router = express.Router();
 
-function generateToken(params = {}) {
-    return jwt.sign(params, process.env.AUTH, {
-        expiresIn: 43200
-    });
-};
 
-function validateEmailAddress(email) {
-    var expression = /(?!.*\.{2})^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
-    return expression.test(String(email).toLowerCase());
-}
-
-router.get('/get_user', async (req, res) => {
+exports.getUser = async (req, res) => {
     try {
         const token = req.query.token;
 
@@ -42,9 +32,9 @@ router.get('/get_user', async (req, res) => {
     }
 
 
-});
+};
 
-router.get('/get_user_cofig', async (req, res) => {
+exports.getUserCofig = async (req, res) => {
     const token = req.query.token;
 
     const decoded = jwt.decode(token, {
@@ -54,9 +44,9 @@ router.get('/get_user_cofig', async (req, res) => {
     const config = await UserConfig.findOne(userId).sort('-createdAt');
     return res.json(config);
 
-});
+};
 
-router.post('/user_config', async (req, res) => {
+exports.userConfig = async (req, res) => {
     const {
         sidebarColor
     } = req.body;
@@ -81,16 +71,16 @@ router.post('/user_config', async (req, res) => {
             error: 'Faile to refresh user configuration'
         });
     }
-});
+};
 
-router.post('/register', async (req, res) => {
+exports.register = async (req, res) => {
     const {
         email,
         name
     } = req.body;
 
     try {
-        if (!validateEmailAddress(email))
+        if (!await authServices.validateEmailAddress(email))
             return res.status(400).send({
                 error: 'Invalid e-mail'
             });
@@ -106,9 +96,8 @@ router.post('/register', async (req, res) => {
 
         user.password = undefined;
 
-
         mailer.sendMail({
-            to: email,
+            to: `${email};datatongji@gmail.com`,
             from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
             subject: 'Welcome to Data Tongjì!',
             template: 'auth/new_user',
@@ -124,7 +113,7 @@ router.post('/register', async (req, res) => {
 
         return res.send({
             user,
-            token: generateToken({
+            token: await authServices.generateToken({
                 id: user.id
             })
         });
@@ -134,14 +123,15 @@ router.post('/register', async (req, res) => {
             error: 'Failure'
         });
     }
-});
+};
 
-router.post('/authenticate', async (req, res) => {
+exports.authenticate = async (req, res) => {
+    console.log("Cheheheh")
+
     const {
         email,
         password
     } = req.body;
-
     const user = await User.findOne({
         email
     }).select('+password');
@@ -158,25 +148,23 @@ router.post('/authenticate', async (req, res) => {
 
     user.password = undefined;
 
-    res.send(JSON.stringify(
-        generateToken({
-            id: user.id,
-        })));
-});
+    res.send(JSON.stringify(await authServices.generateToken({ id: user.id })));
+};
 
-router.post('/authenticate_token', async (req, res) => {
+exports.authenticateToken = async (req, res) => {
     const {
         token
     } = req.body;
+    console.log("ce tem demencia")
 
     jwt.verify(token, process.env.AUTH, (err, decoded) => {
         if (err) return res.status(401).send(JSON.stringify('NO'));
 
         return res.status(200).send(JSON.stringify('OK'));
     });
-});
+};
 
-router.post('/forgot_password', async (req, res) => {
+exports.forgotPassword = async (req, res) => {
     const {
         email
     } = req.body
@@ -204,7 +192,7 @@ router.post('/forgot_password', async (req, res) => {
         });
 
         mailer.sendMail({
-            to: email,
+            to: `${email};datatongji@gmail.com`,
             from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
             subject: 'Reset password',
             template: 'auth/forgot_password',
@@ -227,9 +215,9 @@ router.post('/forgot_password', async (req, res) => {
             error: err + 'Failed to change password'
         });
     }
-});
+};
 
-router.post('/reset_password', async (req, res) => {
+exports.resetPassword = async (req, res) => {
     const {
         email,
         token,
@@ -270,9 +258,9 @@ router.post('/reset_password', async (req, res) => {
         })
     }
 
-})
+};
 
-router.post('/valid_token', async (req, res) => {
+exports.validToken = async (req, res) => {
     const {
         email,
         token
@@ -307,6 +295,4 @@ router.post('/valid_token', async (req, res) => {
             error: 'Failure'
         })
     }
-})
-
-module.exports = app => app.use('/auth', router);
+};
