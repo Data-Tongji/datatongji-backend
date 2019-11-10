@@ -13,5 +13,6 @@ router.post('/authenticate_token', controller.authenticateToken);
 router.post('/forgot_password', controller.forgotPassword);
 router.put('/reset_password', controller.resetPassword);
 router.post('/valid_token', controller.validToken);
+router.put('/updateuser', controller.updateuser);
 
 module.exports = router;

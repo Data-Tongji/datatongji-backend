@@ -12,24 +12,30 @@ exports.post = async (req, res) => {
   const {
     token
 } = req.body;
-
+try {
   const decoded = jwt.decode(token, {
-      complete: true
-  });
-  
-  const idUser = decoded.payload["id"];
-  
-  await UserPhotoPost.deleteOne({idUser:idUser});
+    complete: true
+});
 
-  const post = await UserPhotoPost.create({
-    idUser,
-    name,
-    size,
-    key,
-    url
-  });
+const idUser = decoded.payload["id"];
 
-  return res.json(post);
+await UserPhotoPost.deleteOne({idUser:idUser});
+
+const post = await UserPhotoPost.create({
+  idUser,
+  name,
+  size,
+  key,
+  url
+});
+return res.json(post);
+} catch (error) {
+  res.status(400).send({
+    error: 'Failed to change user config'+ error
+})
+}
+
+
 };
 
 exports.delete = async (req, res) => {
