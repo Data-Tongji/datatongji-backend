@@ -1,5 +1,5 @@
 require('dotenv/config');
-require ('newrelic');
+require('newrelic'); 
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -8,7 +8,7 @@ const app = express();
 // const routes = require('./routes');
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(morgan('dev'));
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
