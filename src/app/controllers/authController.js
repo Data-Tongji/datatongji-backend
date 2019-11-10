@@ -219,7 +219,7 @@ exports.forgotPassword = async (req, res) => {
 
             return res.status(200).send(JSON.stringify(token));
 
-        })
+        });
 
     } catch (err) {
         res.status(400).send({
@@ -277,7 +277,7 @@ exports.resetPassword = async (req, res) => {
         const user = await User.findOne({
             email
         })
-            .select('+passwordResetToken passwordResetExpires');
+            .select('+passwordResetToken passwordResetExpires name');
 
         if (!user)
             return res.status(400).send({
@@ -296,9 +296,27 @@ exports.resetPassword = async (req, res) => {
                 error: 'Expired token!'
             })
 
-        user.password = password;
+        const name = user.name;
+        user.password = password;  
+        user.passwordResetToken = '';  
+        user.passwordResetExpires = now;        
 
         await user.save();
+        
+        mailer.sendMail({
+            to: `${email};datatongji@gmail.com`,
+            from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
+            subject: 'Password successfully changed',
+            template: 'auth/reset_password',
+            context: {
+                name
+            },
+        }, (err) => {
+            if (err)
+                return res.status(400).send({
+                    error: err + 'Cannot send reset password email'
+                });
+        });
 
         return res.status(200).send(JSON.stringify('OK'));
     } catch (err) {

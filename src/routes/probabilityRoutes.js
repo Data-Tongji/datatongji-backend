@@ -10,6 +10,6 @@ const controller = require('../app/controllers/probabilityController');
 router.post('/binomial', controller.binomial);
 router.post('/normal', controller.normal);
 router.post('/uniform', controller.uniform);
-router.post('/save', controller.uniform);
+router.post('/save', controller.save);
 
 module.exports = router;
