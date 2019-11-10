@@ -7,7 +7,7 @@ const mailer = require('../../modules/mailer');
 const User = require('../model/User');
 const UserConfig = require('../model/UserConfig');
 const authServices = require('../Services/authServices')
-const Spot = require('../model/Spot');
+const UserPhoto = require('../model/UserPhoto');
 
 
 
@@ -24,7 +24,13 @@ exports.getUser = async (req, res) => {
             '_id': userId.id
         }).sort('-createdAt');
 
-        return res.json(user)
+        const userImg = await UserPhoto.findOne({
+            'idUser': userId.id
+        }).sort('-createdAt');
+        const data = { user, userImg }
+
+        return res.send(data)
+
     } catch (error) {
         return res.status(400).send({
             error: error + ' register failure'
@@ -42,8 +48,8 @@ exports.getUserCofig = async (req, res) => {
     });
     const userId = decoded.id;
     const config = await UserConfig.findOne(userId).sort('-createdAt');
-    return res.json(config);
 
+    return res.json(config);
 };
 
 exports.userConfig = async (req, res) => {
@@ -126,12 +132,11 @@ exports.register = async (req, res) => {
 };
 
 exports.authenticate = async (req, res) => {
-    console.log("Cheheheh")
-
     const {
         email,
         password
     } = req.body;
+
     const user = await User.findOne({
         email
     }).select('+password');
@@ -155,7 +160,6 @@ exports.authenticateToken = async (req, res) => {
     const {
         token
     } = req.body;
-    console.log("ce tem demencia")
 
     jwt.verify(token, process.env.AUTH, (err, decoded) => {
         if (err) return res.status(401).send(JSON.stringify('NO'));

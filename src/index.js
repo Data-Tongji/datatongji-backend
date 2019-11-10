@@ -22,21 +22,20 @@ app.use(
   "/files",
   express.static(path.resolve(__dirname, "..", "tmp", "uploads"))
 );
-const rotestt = require('./routes');
-app.use(rotestt);
+
 const copyright = require('./routes/copyright');
 const authRoutes = require('./routes/authRoutes');
 const corrRegRoutes = require('./routes/corrRegRoutes');
 const descriptiveRoutes = require('./routes/descriptiveRoutes');
 const probabilityRoutes = require('./routes/probabilityRoutes');
-// const spotsRouts = require('./routes/spotsRouts');
+const spotsRouts = require('./routes/spotsRouts');
 
 app.use('/', copyright)
 app.use('/auth', authRoutes);
 app.use('/correlation', corrRegRoutes);
 app.use('/descriptive', descriptiveRoutes);
 app.use('/probability', probabilityRoutes);
-// app.use('/upload', spotsRouts);
+app.use('/upload', spotsRouts);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

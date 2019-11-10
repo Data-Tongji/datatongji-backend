@@ -7,6 +7,7 @@ const { promisify } = require('util');
 const s3 = new aws.S3();
 
 const SpotSchema = new mongoose.Schema({
+  idUser: String,
   name: String,
   key: String,
   url: String,
@@ -40,4 +41,4 @@ SpotSchema.pre('remove', function () {
 });
 
 
-module.exports = mongoose.model('Spot', SpotSchema);
+module.exports = mongoose.model('UserPhoto', SpotSchema);
