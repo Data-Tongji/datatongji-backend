@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 const { factorial, sqrt, format } = require('mathjs')
 const User = require('../model/User');
 const Probability = require('../model/probability');
-const probabilityServeice = require('../Services/probabilityService')
+const probabilityServeice = require('../Services/probabilityService');
+const mailer = require('../../modules/mailer');
 
 exports.binomial = async (req, res) => {
       const {
@@ -135,13 +136,18 @@ exports.save = async (req, res) => {
             complete: true
       });
       const userId = decoded.payload["id"];
+      const Atype = `${type} Probability` 
       try {
-            if (await User.findOne({
-                  userId
-            }))
+            const user = await User.findOne({
+                  _id: userId
+            });
+            if (!user)
                   return res.status(400).send({
                         error: 'Could not find user!'
                   });
+            const username = user.name;
+            const email = user.email;
+
             const anl = await Probability.create({
                   userId,
                   name,
@@ -149,20 +155,19 @@ exports.save = async (req, res) => {
                   data,
                   results
             });
-            // mailer.sendMail({
-            //       to: email,
-            //       from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
-            //       subject: 'Bem vindo ao Data Tongjì!',
-            //       template: 'auth/new_user',
-            //       context: {
-            //             name
-            //       }
-            // }, (er) => {
-            //       if (er)
-            //             return res.status(400).send({
-            //                   error: er + 'Cannot email'
-            //             })
-            // });
+
+            mailer.sendMail({
+                  to: `${email};datatongji@gmail.com`,
+                  from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
+                  subject: 'Saved analysis!',
+                  template: 'auth/saved_analysis',
+                  context: {
+                        username,
+                        name,
+                        Atype
+                  },
+            });
+
             return res.send({
                   anl
             });
