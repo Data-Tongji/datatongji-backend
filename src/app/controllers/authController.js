@@ -109,8 +109,7 @@ exports.register = async (req, res) => {
         user.password = undefined;
 
         mailer.sendMail({
-            // to: `${email};datatongji@gmail.com`,
-            to: email,
+            to: `${email};datatongji@gmail.com`,
             from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
             subject: 'Welcome to Data Tongjì!',
             template: 'auth/new_user',
