@@ -251,7 +251,7 @@ exports.updateuser = async (req, res) => {
         if (sidebarColor !== '') {
             user.sidebarColor = String(sidebarColor);
         }
-        if (!backgroundColor !== '') {
+        if (backgroundColor !== '') {
             user.backgroundColor = String(backgroundColor);
         }
 
