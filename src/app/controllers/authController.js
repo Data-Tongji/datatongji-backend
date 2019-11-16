@@ -44,8 +44,9 @@ exports.getUserCofig = async (req, res) => {
     const decoded = jwt.decode(token, {
         complete: true
     });
-    const userId = decoded.id;
-    const config = await UserConfig.findOne(userId).sort('-createdAt');
+
+    const userId = decoded.payload;
+    const config = await UserConfig.findOne({ userId: userId.id }).sort('-createdAt');
 
     return res.json(config);
 };
@@ -97,6 +98,11 @@ exports.register = async (req, res) => {
             });
 
         const user = await User.create(req.body);
+
+        const config = await UserConfig.create({
+            userId: user.id,
+            userName: name
+        });
 
         user.password = undefined;
 
@@ -216,6 +222,44 @@ exports.forgotPassword = async (req, res) => {
         res.status(400).send({
             error: err + 'Failed to change password'
         });
+    }
+};
+
+exports.updateuser = async (req, res) => {
+    const {
+        token,
+        sidebarColor,
+        backgroundColor
+    } = req.body
+
+    try {
+
+        const decoded = jwt.decode(token, {
+            complete: true
+        });
+        var userId = decoded.payload;
+
+        const user = await UserConfig.findOne({
+            'userId': userId.id
+        });
+        if (!user)
+            return res.status(400).send({
+                error: 'User not found!'
+            });
+        if (sidebarColor !== '') {
+            user.sidebarColor = String(sidebarColor);
+        }
+        if (backgroundColor !== '') {
+            user.backgroundColor = String(backgroundColor);
+        }
+
+        await user.save();
+
+        return res.status(200).send(JSON.stringify('OK'));
+    } catch (err) {
+        res.status(400).send({
+            error: 'Failed to change user config' + err
+        })
     }
 };
 

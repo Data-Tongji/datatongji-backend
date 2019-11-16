@@ -4,12 +4,25 @@ const UserConfigSchema = new mongoose.Schema({
     userId: {
         type: String,
         require: true,
-        select: false,
     },
+    userName: {
+        type: String,
+        require: true,
+    },    
     sidebarColor: {
         type: String,
         required: true,
         default: 'primary',
+    },
+    backgroundColor: {
+        type: String,
+        required: true,
+        default: 'dark',
+    },
+    defaultLanguage: {
+        type: String,
+        required: true,
+        default: 'pt-br',
     }
 });
 
