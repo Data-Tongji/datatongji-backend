@@ -36,8 +36,6 @@ exports.getUser = async (req, res) => {
             error: error + ' register failure'
         });
     }
-
-
 };
 
 exports.getUserCofig = async (req, res) => {
