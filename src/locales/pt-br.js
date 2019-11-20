@@ -1,5 +1,16 @@
 module.exports = {
       "error": "Falha!",
+      "analysis": {
+            "email": {
+                  "sub": "Uma nova análise foi salva!",
+                  "body": {
+                        "text1": "Olá",
+                        "text2": "você acabou de salvar uma nova análise!",
+                        "text3": "Não se preocupe, iremos cuidar bem da",
+                        "text4": "Conheça mais sobre o site!",
+                  },
+            },
+      },
       "register": {
             "emailerror": "Email inválido!",
             "usererror": "Já existe um cadastro com este email!",

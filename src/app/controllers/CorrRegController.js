@@ -38,7 +38,7 @@ exports.corrReg = async (req, res) => {
 
       } catch (err) {
             return res.status(400).send({
-                  error: err + ''
+                  error: err
             });
       }
 };
@@ -47,21 +47,24 @@ exports.save = async (req, res) => {
       const {
             name,
             data,
-            results
+            results,
+            language
       } = req.body;
       const token = req.headers.authorization;
       const decoded = jwt.decode(token, {
             complete: true
       });
       const userId = decoded.payload["id"];
-      const Atype = 'Correlation and Regression';
       try {
+            var defaultMessage = language !== 'pt-br' ? require('../../locales/en-us.js') : require('../../locales/pt-br.js');
+            const Atype = language !== 'pt-br' ? `Correlation and Regression` : `Correlação e Regressão`; 
+            
             const user = await User.findOne({
                   _id: userId
             });
             if (!user)
                   return res.status(400).send({
-                        error: 'Could not find user!'
+                        error: defaultMessage.login.usererror
                   });
             const username = user.name;
             const email = user.email;
@@ -75,21 +78,24 @@ exports.save = async (req, res) => {
             mailer.sendMail({
                   to: `${email};datatongji@gmail.com`,
                   from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
-                  subject: 'Saved analysis!',
+                  subject: defaultMessage.analysis.email.sub,
                   template: 'auth/saved_analysis',
                   context: {
+                        text1: defaultMessage.analysis.email.body.text1,
+                        text2: defaultMessage.analysis.email.body.text2,
+                        text3: defaultMessage.analysis.email.body.text3,
+                        text4: defaultMessage.analysis.email.body.text4,
                         username,
                         name,
                         Atype
                   },
             });
-
             return res.send({
                   anl
             });
       } catch (err) {
             return res.status(400).send({
-                  error: 'Failed to save analysis'
+                  error: err
             });
       }
 };
