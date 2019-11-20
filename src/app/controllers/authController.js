@@ -272,6 +272,9 @@ exports.updateuser = async (req, res) => {
         if (backgroundColor !== '') {
             user.backgroundColor = String(backgroundColor);
         }
+        if (language !== '') {
+            user.defaultLanguage = String(defaultLanguage);
+        }
 
         await user.save();
 
