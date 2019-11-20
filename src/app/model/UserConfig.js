@@ -22,7 +22,7 @@ const UserConfigSchema = new mongoose.Schema({
     defaultLanguage: {
         type: String,
         required: true,
-        default: 'pt-br',
+        default: 'en-us',
     }
 });
 

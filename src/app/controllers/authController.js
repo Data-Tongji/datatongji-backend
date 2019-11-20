@@ -33,12 +33,12 @@ exports.getUser = async (req, res) => {
 
     } catch (error) {
         return res.status(400).send({
-            error: error + ' register failure'
+            error: error
         });
     }
 };
 
-exports.getUserCofig = async (req, res) => {
+exports.getUserConfig = async (req, res) => {
     const token = req.query.token;
 
     const decoded = jwt.decode(token, {
@@ -66,6 +66,8 @@ exports.userConfig = async (req, res) => {
             userId
         });
 
+        var defaultMessage = config.defaultLanguage !== 'pt-br' ? require('../../locales/en-us.js') : require('../../locales/pt-br.js');
+
         config.sidebarColor = sidebarColor;
 
         await user.save();
@@ -73,7 +75,7 @@ exports.userConfig = async (req, res) => {
 
     } catch (err) {
         return res.status(400).send({
-            error: 'Faile to refresh user configuration'
+            error: defaultMessage.userconfig.error
         });
     }
 };
@@ -81,27 +83,31 @@ exports.userConfig = async (req, res) => {
 exports.register = async (req, res) => {
     const {
         email,
-        name
+        name,
+        language
     } = req.body;
 
     try {
+        var defaultMessage = language !== 'pt-br' ? require('../../locales/en-us.js') : require('../../locales/pt-br.js');
+
         if (!await authServices.validateEmailAddress(email))
             return res.status(400).send({
-                error: 'Invalid e-mail'
+                error: defaultMessage.register.emailerror
             });
 
         if (await User.findOne({
             email
         }))
             return res.status(400).send({
-                error: 'User has already been registered'
+                error: defaultMessage.register.usererror
             });
 
         const user = await User.create(req.body);
 
         const config = await UserConfig.create({
             userId: user.id,
-            userName: name
+            userName: name,
+            defaultLanguage: language
         });
 
         user.password = undefined;
@@ -109,15 +115,19 @@ exports.register = async (req, res) => {
         mailer.sendMail({
             to: `${email};datatongji@gmail.com`,
             from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
-            subject: 'Welcome to Data Tongjì!',
+            subject: defaultMessage.register.email.sub,
             template: 'auth/new_user',
             context: {
+                text1: defaultMessage.register.email.body.text1,
+                text2: defaultMessage.register.email.body.text2,
+                text3: defaultMessage.register.email.body.text3,
+                text4: defaultMessage.register.email.body.text4,
                 name
             }
         }, (er) => {
             if (er)
                 return res.status(400).send({
-                    error: er + 'Cannot send welcome email'
+                    error: er
                 })
         });
 
@@ -130,7 +140,7 @@ exports.register = async (req, res) => {
 
     } catch (err) {
         return res.status(400).send({
-            error: 'Failure'
+            error: defaultMessage.error
         });
     }
 };
@@ -138,21 +148,23 @@ exports.register = async (req, res) => {
 exports.authenticate = async (req, res) => {
     const {
         email,
-        password
+        password,
+        language
     } = req.body;
 
     const user = await User.findOne({
         email
     }).select('+password');
+    var defaultMessage = language !== 'pt-br' ? require('../../locales/en-us.js') : require('../../locales/pt-br.js');
 
     if (!user)
         return res.status(400).send({
-            error: 'User not found'
+            error: defaultMessage.login.usererror
         });
 
     if (!await bcrypt.compare(password, user.password))
         return res.status(401).send({
-            error: 'Invalid credentials'
+            error: defaultMessage.login.invaliderror
         });
 
     user.password = undefined;
@@ -174,17 +186,20 @@ exports.authenticateToken = async (req, res) => {
 
 exports.forgotPassword = async (req, res) => {
     const {
-        email
+        email,
+        language
     } = req.body
 
     try {
         const user = await User.findOne({
             email
         });
+        var defaultMessage = language !== 'pt-br' ? require('../../locales/en-us.js') : require('../../locales/pt-br.js');
+
 
         if (!user)
             return res.status(400).send({
-                error: 'User not found'
+                error: defaultMessage.login.usererror
             });
 
         const token = crypto.randomBytes(20).toString('hex');
@@ -202,16 +217,19 @@ exports.forgotPassword = async (req, res) => {
         mailer.sendMail({
             to: `${email};datatongji@gmail.com`,
             from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
-            subject: 'Reset password',
+            subject: defaultMessage.forgotpass.forgotemail.sub,
             template: 'auth/forgot_password',
             context: {
+                text1: defaultMessage.forgotpass.forgotemail.body.text1,
+                text2: defaultMessage.forgotpass.forgotemail.body.text2,
+                text3: defaultMessage.forgotpass.forgotemail.body.text3,
                 token,
                 name
             },
         }, (err) => {
             if (err)
                 return res.status(400).send({
-                    error: err + 'Cannot send forgot password email'
+                    error: err
                 });
 
             return res.status(200).send(JSON.stringify(token));
@@ -220,7 +238,7 @@ exports.forgotPassword = async (req, res) => {
 
     } catch (err) {
         res.status(400).send({
-            error: err + 'Failed to change password'
+            error: err + ' - ' + defaultMessage.forgotpass.error
         });
     }
 };
@@ -229,10 +247,12 @@ exports.updateuser = async (req, res) => {
     const {
         token,
         sidebarColor,
-        backgroundColor
+        backgroundColor,
+        language
     } = req.body
 
     try {
+        var defaultMessage = language !== 'pt-br' ? require('../../locales/en-us.js') : require('../../locales/pt-br.js');
 
         const decoded = jwt.decode(token, {
             complete: true
@@ -244,7 +264,7 @@ exports.updateuser = async (req, res) => {
         });
         if (!user)
             return res.status(400).send({
-                error: 'User not found!'
+                error: defaultMessage.login.usererror
             });
         if (sidebarColor !== '') {
             user.sidebarColor = String(sidebarColor);
@@ -258,7 +278,7 @@ exports.updateuser = async (req, res) => {
         return res.status(200).send(JSON.stringify('OK'));
     } catch (err) {
         res.status(400).send({
-            error: 'Failed to change user config' + err
+            error: defaultMessage.userconfig.saveconfigerror + ' ' + err
         })
     }
 };
@@ -267,10 +287,12 @@ exports.resetPassword = async (req, res) => {
     const {
         email,
         token,
-        password
+        password,
+        language
     } = req.body
 
     try {
+        var defaultMessage = language !== 'pt-br' ? require('../../locales/en-us.js') : require('../../locales/pt-br.js');
         const user = await User.findOne({
             email
         })
@@ -278,47 +300,51 @@ exports.resetPassword = async (req, res) => {
 
         if (!user)
             return res.status(400).send({
-                error: 'User not found!'
+                error: defaultMessage.login.usererror
             });
 
         if (token !== user.passwordResetToken)
             return res.status(400).send({
-                error: 'Invalid token!'
+                error: defaultMessage.forgotpass.token.error1
             });
 
         const now = new Date();
 
         if (!now > user.passwordResetExpires)
             return res.status(400).send({
-                error: 'Expired token!'
+                error: defaultMessage.forgotpass.token.error2
             })
 
         const name = user.name;
-        user.password = password;  
-        user.passwordResetToken = '';  
-        user.passwordResetExpires = now;        
+        user.password = password;
+        user.passwordResetToken = '';
+        user.passwordResetExpires = now;
 
         await user.save();
-        
+
         mailer.sendMail({
             to: `${email};datatongji@gmail.com`,
             from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
-            subject: 'Password successfully changed',
+            subject: defaultMessage.forgotpass.resetemail.sub,
             template: 'auth/reset_password',
             context: {
+                text1: defaultMessage.forgotpass.resetemail.body.text1,
+                text2: defaultMessage.forgotpass.resetemail.body.text2,
+                text3: defaultMessage.forgotpass.resetemail.body.text3,
+                text4: defaultMessage.register.email.body.text4,
                 name
             },
         }, (err) => {
             if (err)
                 return res.status(400).send({
-                    error: err + 'Cannot send reset password email'
+                    error: err + ' ' + defaultMessage.forgotpass.mailerror
                 });
         });
 
         return res.status(200).send(JSON.stringify('OK'));
     } catch (err) {
         res.status(400).send({
-            error: 'Failed to change password'
+            error: defaultMessage.forgotpass.error
         })
     }
 
@@ -327,10 +353,12 @@ exports.resetPassword = async (req, res) => {
 exports.validToken = async (req, res) => {
     const {
         email,
-        token
+        token,
+        language
     } = req.body
 
     try {
+        var defaultMessage = language !== 'pt-br' ? require('../../locales/en-us.js') : require('../../locales/pt-br.js');
         const user = await User.findOne({
             email
         })
@@ -338,25 +366,25 @@ exports.validToken = async (req, res) => {
 
         if (!user)
             return res.status(400).send({
-                error: 'User not found'
+                error: defaultMessage.login.usererror
             });
 
         if (token !== user.passwordResetToken)
             return res.status(400).send({
-                error: 'Invalid token!'
+                error: defaultMessage.forgotpass.token.error1
             });
 
         const now = new Date();
 
         if (!now > user.passwordResetExpires)
             return res.status(400).send({
-                error: 'Expired token!'
+                error: defaultMessage.forgotpass.token.error2
             })
 
         return res.status(200).send(JSON.stringify('OK'));
     } catch (err) {
         res.status(400).send({
-            error: 'Failure'
+            error: defaultMessage.error
         })
     }
 };
