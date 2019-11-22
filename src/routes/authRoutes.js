@@ -12,6 +12,7 @@ router.post('/authenticate', controller.authenticate);
 router.post('/authenticate_token', controller.authenticateToken);
 router.post('/forgot_password', controller.forgotPassword);
 router.put('/reset_password', controller.resetPassword);
+router.post('/talk_with_us', controller.talkwithus);
 router.post('/valid_token', controller.validToken);
 router.put('/updateuser', controller.updateuser);
 

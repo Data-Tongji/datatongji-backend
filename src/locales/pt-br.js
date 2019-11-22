@@ -1,5 +1,20 @@
 module.exports = {
       "error": "Falha!",
+      "talk": {
+            "tks": {
+                  "sub": "Recebemos sua mensagem",
+                  "email": {
+                        "text1": "nós recebemos sua mensagem!",
+                        "text2": "Obrigado por entrar em contato!"
+                  }
+            },
+            "sub": "Nova mensagem de",
+            "email": {
+                  "text1": "Olá",
+                  "text2": "tenho uma nova mensagem para você:",
+                  "text3": "De:",
+            }
+      },
       "analysis": {
             "email": {
                   "sub": "Uma nova análise foi salva!",

@@ -285,6 +285,62 @@ exports.updateuser = async (req, res) => {
         })
     }
 };
+exports.talkwithus = async (req, res) => {
+    const {
+        email,
+        name,
+        message,
+        language
+    } = req.body
+
+    try {
+        var defaultMessage = language !== 'pt-br' ? require('../../locales/en-us.js') : require('../../locales/pt-br.js');
+
+        mailer.sendMail({
+            to: `datatongji@gmail.com`,
+            from: `"${name}" <no-reply@datatongji.com>`,
+            subject: `${defaultMessage.talk.sub} ${name}`,
+            template: 'auth/talkwithus',
+            context: {
+                text1: defaultMessage.talk.email.text1,
+                text2: defaultMessage.talk.email.text2,
+                text3: `${defaultMessage.talk.email.text3} ${email}`,
+                message
+            },
+        }, (err) => {
+            if (err)
+                return res.status(400).send({
+                    error: err
+                });
+        });
+
+        mailer.sendMail({
+            to: `${email};datatongji@gmail.com`,
+            from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
+            subject: defaultMessage.talk.tks.sub,
+            template: 'auth/talkwithus_tks',
+            context: {
+                text1: defaultMessage.talk.email.text1,
+                text2: defaultMessage.talk.tks.email.text1,
+                text3: defaultMessage.talk.tks.email.text2,
+                name,
+                message
+            },
+        }, (err) => {
+            if (err)
+                return res.status(400).send({
+                    error: err 
+                });
+        });
+
+        return res.status(200).send(JSON.stringify('OK'));
+    } catch (err) {
+        res.status(400).send({
+            error: err
+        })
+    }
+}
+
 
 exports.resetPassword = async (req, res) => {
     const {
@@ -343,14 +399,12 @@ exports.resetPassword = async (req, res) => {
                     error: err + ' ' + defaultMessage.forgotpass.mailerror
                 });
         });
-
         return res.status(200).send(JSON.stringify('OK'));
     } catch (err) {
         res.status(400).send({
             error: defaultMessage.forgotpass.error
         })
     }
-
 };
 
 exports.validToken = async (req, res) => {

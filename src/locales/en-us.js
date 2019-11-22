@@ -1,5 +1,20 @@
 module.exports = {
       "error": "Failure!",
+      "talk": {
+            "tks": {
+                  "sub": "We received your message",
+                  "email": {
+                        "text1": "we received your message!",
+                        "text2": "Thank you for contacting us!"
+                  }
+            },
+            "sub": "New message from",
+            "email": {
+                  "text1": "Hello",
+                  "text2": "I got a new message for you:",
+                  "text3": "From:",
+            }
+      },
       "analysis": {
             "email": {
                   "sub": "A new analysis has been saved!",
@@ -31,7 +46,7 @@ module.exports = {
       "forgotpass": {
             "mailerror": "Failed do send email!",
             "error": "Failed to change password!",
-            "token":{
+            "token": {
                   "error1": "Invalid token!",
                   "error2": "Expired token!"
             },
