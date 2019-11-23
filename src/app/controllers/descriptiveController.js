@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const Descriptive = require('../model/descriptive');
+const User = require('../model/User');
 const descriptiveService = require('../Services/descriptiveServices')
 
 exports.userSimpleFrequency = async (req, res) => {
@@ -29,7 +30,8 @@ exports.simpleFrequency = async (req, res) => {
         varPesq,
         data,
         subTypeMeasure, //enviar apenas se for ordinal
-        amost
+        amost,
+        language
     } = req.body;
 
     const token = req.headers.authorization;
@@ -43,10 +45,6 @@ exports.simpleFrequency = async (req, res) => {
     var mediumPoint = null;
 
     try {
-        if (!varPesq || data.length === 0)
-            return res.status(400).send({
-                error: 'Existem campos vazios'
-            });
 
         const decoded = jwt.decode(token, {
             complete: true
@@ -62,7 +60,7 @@ exports.simpleFrequency = async (req, res) => {
         } else {
             subType = subTypeMeasure;
         };
-        if (subType === 'Contínua') {
+        if (subType === 'Continuous') {
             amplitude = await descriptiveService.stepAmplitude(dataOrder);
             lines = parseFloat(Math.sqrt(dataOrder.length).toFixed(2));
             classInterval = await descriptiveService.calculateInterv(amplitude, parseInt(lines), dataOrder);
@@ -74,7 +72,7 @@ exports.simpleFrequency = async (req, res) => {
         }
 
         const countElements = await descriptiveService.calculateElements(dataOrder);
-        const mode = await descriptiveService.calculateMode(dataFrequency, subType, countElements, dataOrder);
+        const mode = await descriptiveService.calculateMode(dataFrequency, subType, countElements, dataOrder, language);
         // const mean = await descriptiveService.calculatemean(dataOrder);
         const weightedMean = await descriptiveService.calculateWeightedMean(dataFrequency, typeVar, subType);
         const accumulatedFrequency = await descriptiveService.calculateAccumulatedFrequency(dataFrequency);
@@ -87,16 +85,12 @@ exports.simpleFrequency = async (req, res) => {
         const dataDescriptive = await descriptiveService.mountsDescriptive(dataOrder.length, dataFrequency, subType);
 
         return res.send({
-            amplitude,
+            // amplitude,
             lines,
             classInterval,
-            // initialElements,
-            // finalElements,
-            // countClass,
             varPesq,
             typeVar,
             subType,
-            // mediumPoint,
             mode,
             weightedMean,
             median,
@@ -109,7 +103,66 @@ exports.simpleFrequency = async (req, res) => {
 
     } catch (err) {
         return res.status(400).send({
-            error: err + ''
+            error: err
+        });
+    }
+};
+
+exports.save = async (req, res) => {
+    const {
+        name,
+        data,
+        results,
+        language
+    } = req.body;
+    const token = req.headers.authorization;
+    const decoded = jwt.decode(token, {
+        complete: true
+    });
+    const userId = decoded.payload["id"];
+    try {
+        var defaultMessage = language !== 'pt-br' ? require('../../locales/en-us.js') : require('../../locales/pt-br.js');
+        const Atype = language !== 'pt-br' ? `Descriptive Analysis` : `Análise Descritiva`;
+
+        const user = await User.findOne({
+            _id: userId
+        });
+        if (!user)
+            return res.status(400).send({
+                error: defaultMessage.login.usererror
+            });
+        const username = user.name;
+        const email = user.email;
+        const anl = await Descriptive.create({
+            userId,
+            name,
+            data,
+            results
+        });
+
+        mailer.sendMail({
+            to: `${email};datatongji@gmail.com`,
+            from: '"Data Tongjì 统计" <no-reply@datatongji.com>',
+            subject: defaultMessage.analysis.email.sub,
+            template: 'auth/saved_analysis',
+            context: {
+                text1: defaultMessage.analysis.email.body.text1,
+                text2: defaultMessage.analysis.email.body.text2,
+                text3: defaultMessage.analysis.email.body.text3,
+                text4: defaultMessage.analysis.email.body.text4,
+                username,
+                name,
+                Atype
+            },
+        });
+
+
+        return res.send({
+            anl
+        });
+    } catch (err) {
+        return res.status(400).send({
+            error: err
         });
     }
 };

@@ -15,6 +15,9 @@ module.exports = {
                   "text3": "From:",
             }
       },
+      "descrip": {
+            "nomode": "The dataset has no mode"
+      },
       "analysis": {
             "email": {
                   "sub": "A new analysis has been saved!",

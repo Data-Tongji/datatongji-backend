@@ -104,6 +104,7 @@ exports.register = async (req, res) => {
 
         const user = await User.create(req.body);
 
+        console.log(language);
         const config = await UserConfig.create({
             userId: user.id,
             userName: name,

@@ -1,25 +1,25 @@
 const jwt = require('jsonwebtoken');
 require('dotenv/config');
 
-exports.CheckDataType = async(data, subTypeMeasure) => {
+exports.CheckDataType = async (data, subTypeMeasure) => {
     if (subTypeMeasure !== 'Ordinal') {
         var vetor = data
-        let answer = 'Quantitativo'
+        let answer = 'Quantitative'
         for (let i = 0; i < vetor.length; i++) {
             if (isNaN(vetor[i])) {
-                answer = 'Qualitativo'
+                answer = 'Qualitative'
             };
         }
         return answer
     }
-    else { return 'Qualitativo' }
+    else { return 'Qualitative' }
 };
 
-function compareNumbers(a, b){
+function compareNumbers(a, b) {
     return a - b;
 };
 
-function TransformArrayOrd(dataOrder){
+function TransformArrayOrd(dataOrder) {
     let arr = [];
     for (let i = 0; i < dataOrder.length; i++) {
         for (let j = 0; j < dataOrder[i].frequency; j++) {
@@ -29,7 +29,7 @@ function TransformArrayOrd(dataOrder){
     return arr;
 };
 
-exports.simpleFrequency = async(NewData, data, subTypeMeasure) => {
+exports.simpleFrequency = async (NewData, data, subTypeMeasure) => {
     if (subTypeMeasure !== 'Ordinal') {
         let result = {};
         let resultUnic = [];
@@ -57,7 +57,7 @@ exports.simpleFrequency = async(NewData, data, subTypeMeasure) => {
     }
 };
 
-exports.mountDataCont = async(initialElements, finalElements, frequency, mediumPoint) => {
+exports.mountDataCont = async (initialElements, finalElements, frequency, mediumPoint) => {
     let res = [];
 
     for (let i = 0; i < initialElements.length; i++) {
@@ -71,7 +71,7 @@ exports.mountDataCont = async(initialElements, finalElements, frequency, mediumP
     return res;
 };
 
-exports.countByClass = async(arr, initialElements, finalElements) => {
+exports.countByClass = async (arr, initialElements, finalElements) => {
     let res = [];
     for (let i = 0; i < initialElements.length; i++) {
         res.push(0);
@@ -86,14 +86,14 @@ exports.countByClass = async(arr, initialElements, finalElements) => {
     return res;
 };
 
-function Accumulated(freqAcum, freqAcumLength){
+function Accumulated(freqAcum, freqAcumLength) {
     let porAcum = 0;
     porAcum = (100 * (freqAcum)) / (freqAcumLength);
     porAcum = porAcum.toFixed(2);
     return porAcum;
 };
 
-function simplePercentage(quant, dataLenght){
+function simplePercentage(quant, dataLenght) {
     let simplePercentage = 0;
     simplePercentage = (100 * (quant)) / (dataLenght);
     simplePercentage = simplePercentage.toFixed(2);
@@ -101,7 +101,7 @@ function simplePercentage(quant, dataLenght){
     return simplePercentage;
 };
 
-exports.orderby = async(data, answer, subTypeMeasure) => {
+exports.orderby = async (data, answer, subTypeMeasure) => {
     let = finalArray = [];
     let = numerical = [];
     let = alphabetical = [];
@@ -129,14 +129,14 @@ exports.orderby = async(data, answer, subTypeMeasure) => {
     }
 };
 
-exports.calculateWeightedMean = async(frequencyValue, type, subType) => {
+exports.calculateWeightedMean = async (frequencyValue, type, subType) => {
     let sum = 0;
     let n = frequencyValue.reduce((total, frequencyValue) => total + frequencyValue.frequency, 0);
 
-    if (type === 'Qualitativo') {
-        return "Não existe"
+    if (type === 'Qualitative') {
+        return "n/a"
     } else {
-        if (subType !== 'Contínua') {
+        if (subType !== 'Continuous') {
             for (let i = 0; i < frequencyValue.length; i++) {
                 sum = sum + (parseFloat(frequencyValue[i].frequency) * parseFloat(frequencyValue[i].value));
             }
@@ -152,27 +152,27 @@ exports.calculateWeightedMean = async(frequencyValue, type, subType) => {
 };
 
 
-exports.calculateVariance = async(frequencyValue, mean, type, amost, subType) => {
+exports.calculateVariance = async (frequencyValue, mean, type, amost, subType) => {
     let sum = 0;
     let n = frequencyValue.reduce((total, frequencyValue) => total + frequencyValue.frequency, 0);
 
-    if (type === 'Qualitativo') {
-        return "Não existe"
+    if (type === 'Qualitative') {
+        return "n/a"
     }
-    if (subType !== 'Contínua') {
+    if (subType !== 'Continuous') {
         for (let i = 0; i < frequencyValue.length; i++) {
             sum = sum + ((Math.pow((parseFloat(frequencyValue[i].value) - mean), 2)) * parseFloat(frequencyValue[i].frequency));
         }
-        if (amost === 'População') {
+        if (amost === 'Population') {
             return parseFloat((sum / n).toFixed(4));
         } else {
             return parseFloat((sum / (n - 1)).toFixed(4));
         }
-    } else if (subType === 'Contínua') {
+    } else if (subType === 'Continuous') {
         for (let i = 0; i < frequencyValue.length; i++) {
             sum = sum + ((Math.pow((parseFloat(frequencyValue[i].mediumPoint) - mean), 2)) * parseFloat(frequencyValue[i].frequency));
         }
-        if (amost === 'População') {
+        if (amost === 'Population') {
             return parseFloat((sum / n).toFixed(4));
         } else {
             return parseFloat((sum / (n - 1)).toFixed(4));
@@ -180,33 +180,33 @@ exports.calculateVariance = async(frequencyValue, mean, type, amost, subType) =>
     }
 };
 
-exports.calculateDP = async(variance, type) => {
-    if (type === 'Qualitativo') {
-        return 'Não existe'
+exports.calculateDP = async (variance, type) => {
+    if (type === 'Qualitative') {
+        return 'n/a'
     }
     return parseFloat((Math.sqrt(variance)).toFixed(4));
 };
 
-exports.calculateCV = async(dp, mp, type) =>{
-    if (type === 'Qualitativo') {
-        return 'Não existe'
+exports.calculateCV = async (dp, mp, type) => {
+    if (type === 'Qualitative') {
+        return 'n/a'
     }
     return ((dp / mp) * 100).toFixed(3) + '%';
 };
 
-exports.calculatemean = async(data) => {
+exports.calculatemean = async (data) => {
     let sum = 0;
 
     for (let i = 0; i < data.length; i++) {
         if (isNaN(data[i])) {
-            return "Não existe"
+            return "n/a"
         }
         sum = sum + parseFloat(data[i]);
     }
     return (sum / data.length)
 };
 
-exports.calculateAccumulatedFrequency = async(dataFrequency) => {
+exports.calculateAccumulatedFrequency = async (dataFrequency) => {
     let fac = [];
     for (let i = 0; i < dataFrequency.length; i++) {
         if (i === 0) {
@@ -218,9 +218,9 @@ exports.calculateAccumulatedFrequency = async(dataFrequency) => {
     return fac;
 };
 
-exports.calculateMedian = async(arr, interval, dataFrequency, subType, fac) =>{
+exports.calculateMedian = async (arr, interval, dataFrequency, subType, fac) => {
     let n = arr.length;
-    if (subType !== 'Contínua') {
+    if (subType !== 'Continuous') {
 
         if (n % 2 === 0) {
             let a = arr[(n / 2) - 1];
@@ -241,7 +241,7 @@ exports.calculateMedian = async(arr, interval, dataFrequency, subType, fac) =>{
             return (parseInt(n / 2) + 1) + 'º Posição: ' + arr[(parseInt(n / 2) + 1)];
         }
     }
-    else if (subType === 'Contínua') {
+    else if (subType === 'Continuous') {
         let medpos = arr.length / 2;
         let Li = 0;
         let Fai = 0;
@@ -262,9 +262,9 @@ exports.calculateMedian = async(arr, interval, dataFrequency, subType, fac) =>{
     }
 };
 
-exports.calculateMediumPoint = async(subType, initialElements, finalElements) => {
+exports.calculateMediumPoint = async (subType, initialElements, finalElements) => {
     let mediumPoint = [];
-    if (subType === 'Contínua') {
+    if (subType === 'Continuous') {
         for (let i = 0; i < initialElements.length; i++) {
 
             mediumPoint.push((initialElements[i] + finalElements[i]) / 2);
@@ -273,7 +273,7 @@ exports.calculateMediumPoint = async(subType, initialElements, finalElements) =>
     return mediumPoint;
 };
 
-exports.calculateElements = async(dataOrder) => {
+exports.calculateElements = async (dataOrder) => {
     elements = [];
     contVet = [];
     elements.push(dataOrder[0]);
@@ -294,19 +294,20 @@ exports.calculateElements = async(dataOrder) => {
     return elements;
 };
 
-exports.calculateMode = async(frequencyValue, type, countElements, dataOrder) => {
+exports.calculateMode = async (frequencyValue, type, countElements, dataOrder, language) => {
     let mode = [];
     let higherNumber = parseFloat(frequencyValue[0].frequency);
     let x = countElements[0];
-
+    var defaultMessage = language !== 'pt-br' ? require('../../locales/en-us.js') : require('../../locales/pt-br.js');
+            
     if (dataOrder.every((val, i, dataOrder) => val === dataOrder[0])) {
         return [{
             "mode": frequencyValue[0].frequency,
-            "Value": 'Série Amodal'
+            "Value": defaultMessage.descrip.nomode
         }]
     }
 
-    if (type !== 'Contínua') {
+    if (type !== 'Continuous') {
         mode.push({
             "mode": frequencyValue[0].frequency,
             "Value": frequencyValue[0].value
@@ -358,7 +359,7 @@ exports.calculateMode = async(frequencyValue, type, countElements, dataOrder) =>
     }
 };
 
-exports.mountsDescriptive = async(dataLength, dataFrequency, subType) => {
+exports.mountsDescriptive = async (dataLength, dataFrequency, subType) => {
     var relativeFrequency = [];
     var freqAcum = 0;
     var accumulatedPercentage = [];
@@ -367,7 +368,7 @@ exports.mountsDescriptive = async(dataLength, dataFrequency, subType) => {
         freqAcum = freqAcum + parseFloat(dataFrequency[i].frequency)
         accumulatedPercentage.push(Accumulated(freqAcum, dataLength));
         relativeFrequency.push(simplePercentage(dataFrequency[i].frequency, dataLength));
-        if (subType === 'Contínua') {
+        if (subType === 'Continuous') {
             descriptive.push({
                 "value": dataFrequency[i].value + ' → ' + dataFrequency[i].value2,
                 "frequency": dataFrequency[i].frequency,
@@ -376,7 +377,7 @@ exports.mountsDescriptive = async(dataLength, dataFrequency, subType) => {
                 "accumulatedPercentage": accumulatedPercentage[i]
             })
         }
-        if (subType !== 'Contínua') {
+        if (subType !== 'Continuous') {
             descriptive.push({
                 "value": dataFrequency[i].value,
                 "frequency": dataFrequency[i].frequency,
@@ -390,27 +391,27 @@ exports.mountsDescriptive = async(dataLength, dataFrequency, subType) => {
     return descriptive;
 };
 
-exports.subTypeVar = async(dataLength, typeVar) => {
-    if (typeVar === 'Qualitativo')
+exports.subTypeVar = async (dataLength, typeVar) => {
+    if (typeVar === 'Qualitative')
         return 'Nominal';
 
     if (dataLength >= 9)
-        return 'Contínua';
+        return 'Continuous';
 
-    return 'Discreta';
+    return 'Discrete';
 };
 
-exports.stepAmplitude = async(dataOrder) => {
+exports.stepAmplitude = async (dataOrder) => {
     const index = (dataOrder.length - 1);
     const min = parseFloat(dataOrder[0]);
     const max = parseFloat(dataOrder[index]);
     return ((max - min) + 1);
 };
 
-exports.calculatePercentile = async(dataOrder, subType, dataFrequency, accumulatedFrequency, classInterval) => {
+exports.calculatePercentile = async (dataOrder, subType, dataFrequency, accumulatedFrequency, classInterval) => {
     let P = 0;
     let percs = [];
-    if (subType === 'Contínua') {
+    if (subType === 'Continuous') {
         for (var i = 1; i <= 100; i++) {
             P = (i * (dataOrder.length)) / 100;
             let Li = [];
@@ -437,7 +438,7 @@ exports.calculatePercentile = async(dataOrder, subType, dataFrequency, accumulat
             );
         }
     }
-    else if (subType !== 'Contínua') {
+    else if (subType !== 'Continuous') {
         for (var i = 1; i <= 100; i++) {
             P = (i * (dataOrder.length - 1)) / 100;
 
@@ -451,7 +452,7 @@ exports.calculatePercentile = async(dataOrder, subType, dataFrequency, accumulat
     return percs;
 };
 
-exports.calculateValue1 = async(elements, interval) => {
+exports.calculateValue1 = async (elements, interval) => {
     let k = interval[1];
     let res = [];
     for (let i = 0; i < k; i++) {
@@ -460,7 +461,7 @@ exports.calculateValue1 = async(elements, interval) => {
     return res;
 };
 
-exports.calculateValue2 = async(initialElements, interval) => {
+exports.calculateValue2 = async (initialElements, interval) => {
     let k = interval[1];
     let res = [];
     for (let i = 0; i < k; i++) {
@@ -469,7 +470,7 @@ exports.calculateValue2 = async(initialElements, interval) => {
     return res;
 };
 
-exports.calculateInterv = async(amplitude, lines, vet) => {
+exports.calculateInterv = async (amplitude, lines, vet) => {
     let r = [];
     let flag = false;
     let amp = Math.round(amplitude);

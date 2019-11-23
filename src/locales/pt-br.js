@@ -15,6 +15,9 @@ module.exports = {
                   "text3": "De:",
             }
       },
+      "descrip": {
+            "nomode": "Série Amodal"
+      },
       "analysis": {
             "email": {
                   "sub": "Uma nova análise foi salva!",
