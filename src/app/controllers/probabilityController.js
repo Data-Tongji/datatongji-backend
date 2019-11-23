@@ -46,7 +46,7 @@ exports.binomial = async (req, res) => {
 
       } catch (err) {
             return res.status(400).send({
-                  error: err + ''
+                  error: err.message
             });
       }
 };
@@ -82,7 +82,7 @@ exports.uniform = async (req, res) => {
 
       } catch (err) {
             return res.status(400).send({
-                  error: err + ''
+                  error: err.message
             });
       }
 };
@@ -119,7 +119,7 @@ exports.normal = async (req, res) => {
 
       } catch (err) {
             return res.status(400).send({
-                  error: err + ''
+                  error: err.message
             });
       }
 };

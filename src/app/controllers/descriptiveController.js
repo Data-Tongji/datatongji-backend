@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken');
 
+const express = require('express');
 const Descriptive = require('../model/descriptive');
 const User = require('../model/User');
+const mailer = require('../../modules/mailer');
 const descriptiveService = require('../Services/descriptiveServices')
 
 exports.userSimpleFrequency = async (req, res) => {
@@ -103,7 +105,7 @@ exports.simpleFrequency = async (req, res) => {
 
     } catch (err) {
         return res.status(400).send({
-            error: err
+            error: err.message
         });
     }
 };
@@ -162,7 +164,7 @@ exports.save = async (req, res) => {
         });
     } catch (err) {
         return res.status(400).send({
-            error: err
+            error: err.message
         });
     }
 };

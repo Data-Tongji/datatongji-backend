@@ -38,7 +38,7 @@ exports.corrReg = async (req, res) => {
 
       } catch (err) {
             return res.status(400).send({
-                  error: err
+                  error: err.message
             });
       }
 };
@@ -95,7 +95,7 @@ exports.save = async (req, res) => {
             });
       } catch (err) {
             return res.status(400).send({
-                  error: err
+                  error: err.message
             });
       }
 };

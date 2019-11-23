@@ -31,9 +31,9 @@ exports.getUser = async (req, res) => {
 
         return res.send(data)
 
-    } catch (error) {
+    } catch (err) {
         return res.status(400).send({
-            error: error
+            error: err.message
         });
     }
 };
@@ -230,7 +230,7 @@ exports.forgotPassword = async (req, res) => {
         }, (err) => {
             if (err)
                 return res.status(400).send({
-                    error: err
+                    error: err.message
                 });
 
             return res.status(200).send(JSON.stringify(token));
@@ -239,7 +239,7 @@ exports.forgotPassword = async (req, res) => {
 
     } catch (err) {
         res.status(400).send({
-            error: err + ' - ' + defaultMessage.forgotpass.error
+            error: err.message + ' - ' + defaultMessage.forgotpass.error
         });
     }
 };
@@ -311,7 +311,7 @@ exports.talkwithus = async (req, res) => {
         }, (err) => {
             if (err)
                 return res.status(400).send({
-                    error: err
+                    error: err.message
                 });
         });
 
@@ -330,14 +330,14 @@ exports.talkwithus = async (req, res) => {
         }, (err) => {
             if (err)
                 return res.status(400).send({
-                    error: err 
+                    error: err.message 
                 });
         });
 
         return res.status(200).send(JSON.stringify('OK'));
     } catch (err) {
         res.status(400).send({
-            error: err
+            error: err.message
         })
     }
 }
@@ -397,7 +397,7 @@ exports.resetPassword = async (req, res) => {
         }, (err) => {
             if (err)
                 return res.status(400).send({
-                    error: err + ' ' + defaultMessage.forgotpass.mailerror
+                    error: err.message + ' ' + defaultMessage.forgotpass.mailerror
                 });
         });
         return res.status(200).send(JSON.stringify('OK'));
