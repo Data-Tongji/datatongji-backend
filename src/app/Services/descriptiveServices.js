@@ -395,7 +395,7 @@ exports.subTypeVar = async (dataLength, typeVar) => {
     if (typeVar === 'Qualitative')
         return 'Nominal';
 
-    if (dataLength >= 9)
+    if (dataLength >= 7)
         return 'Continuous';
 
     return 'Discrete';
