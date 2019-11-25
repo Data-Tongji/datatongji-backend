@@ -3,3 +3,21 @@ node_modules
 .env
 
 yarn.lock
+
+.firebase 
+
+.vs 
+
+.vscode 
+
+functions 
+
+build
+
+.firebaserc
+
+firebase.json
+
+package-lock.json
+
+newrelic_agent.log
