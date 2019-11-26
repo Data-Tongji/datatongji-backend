@@ -49,7 +49,7 @@ exports.Regression = async (X, Y) => {
     let a = (EY - (r * EX)) / X.length;
 
     return {
-          "aCoef": parseFloat(r.toFixed(4)),
-          "iPoint": parseFloat(a.toFixed(4))
+          "aCoef": parseFloat(a.toFixed(4)),
+          "iPoint": parseFloat(r.toFixed(4))
     };
 };
