@@ -11,7 +11,7 @@ This project was developed in order to optimize some statistic analyzes (Descrip
 
 ## Technologies
 
-  - Node.JS;
+  - Node.js;
   - Reactjs ([Frontend](https://github.com/Data-Tongji/datatongji));
   - [Check package.json](/src/package.json).
 
@@ -29,7 +29,7 @@ yarn dev
 
 ## Release History
 
-* 0.1.0
+* 1.0.0
     * Published
 
 ## Authors
