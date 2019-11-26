@@ -16,7 +16,8 @@ module.exports = {
             }
       },
       "descrip": {
-            "nomode": "Série Amodal"
+            "nomode": "Série Amodal",
+            "pos": "Posição"
       },
       "analysis": {
             "email": {

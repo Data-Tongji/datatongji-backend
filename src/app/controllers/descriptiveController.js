@@ -78,7 +78,7 @@ exports.simpleFrequency = async (req, res) => {
         // const mean = await descriptiveService.calculatemean(dataOrder);
         const weightedMean = await descriptiveService.calculateWeightedMean(dataFrequency, typeVar, subType);
         const accumulatedFrequency = await descriptiveService.calculateAccumulatedFrequency(dataFrequency);
-        const median = await descriptiveService.calculateMedian(dataOrder, classInterval, dataFrequency, subType, accumulatedFrequency);
+        const median = await descriptiveService.calculateMedian(dataOrder, classInterval, dataFrequency, subType, accumulatedFrequency, language);
 
         const variance = await descriptiveService.calculateVariance(dataFrequency, weightedMean, typeVar, amost, subType);
         const deviation = await descriptiveService.calculateDP(variance, typeVar);

@@ -16,7 +16,8 @@ module.exports = {
             }
       },
       "descrip": {
-            "nomode": "The dataset has no mode"
+            "nomode": "The dataset has no mode",
+            "pos": "Position"
       },
       "analysis": {
             "email": {

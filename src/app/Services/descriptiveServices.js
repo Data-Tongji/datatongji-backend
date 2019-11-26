@@ -218,8 +218,9 @@ exports.calculateAccumulatedFrequency = async (dataFrequency) => {
     return fac;
 };
 
-exports.calculateMedian = async (arr, interval, dataFrequency, subType, fac) => {
+exports.calculateMedian = async (arr, interval, dataFrequency, subType, fac, language) => {
     let n = arr.length;
+    var defaultMessage = language !== 'pt-br' ? require('../../locales/en-us.js') : require('../../locales/pt-br.js');
     if (subType !== 'Continuous') {
 
         if (n % 2 === 0) {
@@ -228,17 +229,17 @@ exports.calculateMedian = async (arr, interval, dataFrequency, subType, fac) => 
 
             if (!isNaN(a) && !isNaN(b)) {
                 if (parseFloat(a) === parseFloat(b)) {
-                    return (n / 2) + 'º e ' + ((n / 2) + 1) + 'º Posição: ' + a;
+                    return (n / 2) + 'º e ' + ((n / 2) + 1) + 'º '+defaultMessage.descrip.pos+': ' + a;
                 } else {
-                    return (n / 2) + 'º Posição: ' + a + ' | ' + ((n / 2) + 1) + 'º Posição: ' + b;
+                    return (n / 2) + 'º '+defaultMessage.descrip.pos+': ' + a + ' | ' + ((n / 2) + 1) + 'º '+defaultMessage.descrip.pos+': ' + b;
                 }
             } else if (a === b) {
-                return (n / 2) + 'º e ' + ((n / 2) + 1) + 'º Posição: ' + a;
+                return (n / 2) + 'º e ' + ((n / 2) + 1) + 'º '+defaultMessage.descrip.pos+': ' + a;
             } else {
-                return (n / 2) + 'º Posição: ' + a + ' | ' + ((n / 2) + 1) + 'º Posição: ' + b;
+                return (n / 2) + 'º '+defaultMessage.descrip.pos+': ' + a + ' | ' + ((n / 2) + 1) + 'º '+defaultMessage.descrip.pos+': ' + b;
             }
         } else {
-            return (parseInt(n / 2) + 1) + 'º Posição: ' + arr[(parseInt(n / 2) + 1)];
+            return (parseInt(n / 2) + 1) + 'º '+defaultMessage.descrip.pos+': ' + arr[(parseInt(n / 2) + 1)];
         }
     }
     else if (subType === 'Continuous') {
@@ -445,7 +446,7 @@ exports.calculatePercentile = async (dataOrder, subType, dataFrequency, accumula
             if (((i * (dataOrder.length - 1)) % 100) === 0) {
                 percs.push(dataOrder[P]);
             } else {
-                percs.push(/*P.toFixed(1) + 'º Posição: ' +*/ dataOrder[(parseInt(P))]);
+                percs.push(dataOrder[(parseInt(P))]);
             }
         }
     }
