@@ -5,14 +5,14 @@ const router = express.Router();
 
 var development = ["Data Tongji"];
 development.push({
-    nome: 'Lucas Damas Corrêa',
-    idade: '19',
-    profissao: 'Developer',
+    name: 'Lucas Damas Corrêa',
+    age: '19',
+    occupation: 'Developer',
 })
 development.push({
-    nome: 'Leonardo Ronne',
-    idade: '24',
-    profissao: 'Analyst and Developer',
+    name: 'Leonardo Ronne',
+    age: '24',
+    occupation: 'Product Manager',
 })
 
 

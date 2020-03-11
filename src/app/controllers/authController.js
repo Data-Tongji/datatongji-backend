@@ -267,6 +267,7 @@ exports.updateuser = async (req, res) => {
             return res.status(400).send({
                 error: defaultMessage.login.usererror
             });
+            
         if (sidebarColor !== '') {
             user.sidebarColor = String(sidebarColor);
         }
