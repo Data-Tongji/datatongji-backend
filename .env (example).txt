@@ -6,7 +6,7 @@ AUTH=jwt_secret
 
 MONGO_URL=mongo@exampleurl
 
-MAIL_USER=user
+MAIL_USER=SendGrid User
 
 MAIL_PASS=userpass
 
